@@ -4,37 +4,32 @@ import { useLocation } from 'react-router-dom';
 import { OrderCardProps } from './type';
 import { TIngredient } from '@utils-types';
 import { OrderCardUI } from '../ui/order-card';
+import { useSelector } from '../../services/store';
+import { ingredientsSelectors } from '../../services/slice/ingredientsSlice';
 
-const maxIngredients = 6;
+const MAX_INGREDIENTS = 6;
 
 export const OrderCard: FC<OrderCardProps> = memo(({ order }) => {
   const location = useLocation();
 
-  /** TODO: взять переменную из стора */
-  const ingredients: TIngredient[] = [];
+  const ingredients = useSelector(ingredientsSelectors.selectIngredients);
 
   const orderInfo = useMemo(() => {
-    if (!ingredients.length) return null;
+    if (ingredients.length === 0) return null;
 
-    const ingredientsInfo = order.ingredients.reduce(
-      (acc: TIngredient[], item: string) => {
-        const ingredient = ingredients.find((ing) => ing._id === item);
-        if (ingredient) return [...acc, ingredient];
-        return acc;
-      },
-      []
-    );
+    // Получаем массив ингредиентов заказа, фильтруя по наличию в общем списке
+    const ingredientsInfo = order.ingredients
+      .map((id) => ingredients.find((ing) => ing._id === id))
+      .filter((ing): ing is TIngredient => Boolean(ing));
 
-    const total = ingredientsInfo.reduce((acc, item) => acc + item.price, 0);
+    const total = ingredientsInfo.reduce((sum, item) => sum + item.price, 0);
 
-    const ingredientsToShow = ingredientsInfo.slice(0, maxIngredients);
+    const ingredientsToShow = ingredientsInfo.slice(0, MAX_INGREDIENTS);
 
-    const remains =
-      ingredientsInfo.length > maxIngredients
-        ? ingredientsInfo.length - maxIngredients
-        : 0;
+    const remains = Math.max(ingredientsInfo.length - MAX_INGREDIENTS, 0);
 
     const date = new Date(order.createdAt);
+
     return {
       ...order,
       ingredientsInfo,
@@ -50,7 +45,7 @@ export const OrderCard: FC<OrderCardProps> = memo(({ order }) => {
   return (
     <OrderCardUI
       orderInfo={orderInfo}
-      maxIngredients={maxIngredients}
+      maxIngredients={MAX_INGREDIENTS}
       locationState={{ background: location }}
     />
   );

@@ -1,41 +1,37 @@
-import { useState, useRef, useEffect, FC } from 'react';
+import React, { FC, useState, useRef, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 
 import { TTabMode } from '@utils-types';
 import { BurgerIngredientsUI } from '../ui/burger-ingredients';
+import { useSelector } from '../../services/store';
+import { ingredientsSelectors } from '../../services/slice/ingredientsSlice';
 
 export const BurgerIngredients: FC = () => {
-  /** TODO: взять переменные из стора */
-  const buns = [];
-  const mains = [];
-  const sauces = [];
+  const ingredients = useSelector(ingredientsSelectors.selectIngredients);
+
+  // Группируем ингредиенты по типам
+  const buns = ingredients.filter(({ type }) => type === 'bun');
+  const mains = ingredients.filter(({ type }) => type === 'main');
+  const sauces = ingredients.filter(({ type }) => type === 'sauce');
 
   const [currentTab, setCurrentTab] = useState<TTabMode>('bun');
+
+  // Рефы заголовков для прокрутки
   const titleBunRef = useRef<HTMLHeadingElement>(null);
   const titleMainRef = useRef<HTMLHeadingElement>(null);
   const titleSaucesRef = useRef<HTMLHeadingElement>(null);
 
-  const [bunsRef, inViewBuns] = useInView({
-    threshold: 0
-  });
+  // Отслеживание видимости секций
+  const [bunsRef, inViewBuns] = useInView({ threshold: 0 });
+  const [mainsRef, inViewMains] = useInView({ threshold: 0 });
+  const [saucesRef, inViewSauces] = useInView({ threshold: 0 });
 
-  const [mainsRef, inViewFilling] = useInView({
-    threshold: 0
-  });
-
-  const [saucesRef, inViewSauces] = useInView({
-    threshold: 0
-  });
-
+  // Обновляем текущую вкладку в зависимости от видимой секции
   useEffect(() => {
-    if (inViewBuns) {
-      setCurrentTab('bun');
-    } else if (inViewSauces) {
-      setCurrentTab('sauce');
-    } else if (inViewFilling) {
-      setCurrentTab('main');
-    }
-  }, [inViewBuns, inViewFilling, inViewSauces]);
+    if (inViewBuns) setCurrentTab('bun');
+    else if (inViewSauces) setCurrentTab('sauce');
+    else if (inViewMains) setCurrentTab('main');
+  }, [inViewBuns, inViewMains, inViewSauces]);
 
   const onTabClick = (tab: string) => {
     setCurrentTab(tab as TTabMode);
@@ -46,8 +42,6 @@ export const BurgerIngredients: FC = () => {
     if (tab === 'sauce')
       titleSaucesRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
-
-  return null;
 
   return (
     <BurgerIngredientsUI
