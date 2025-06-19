@@ -40,12 +40,23 @@ const App: React.FC = () => {
 
   useEffect(() => {
     dispatch(getIngredients());
-    dispatch(getUser())
-      .unwrap()
-      .catch(console.error)
-      .finally(() => {
-        dispatch(userSliceActions.authCheck());
-      });
+
+    const refreshToken = localStorage.getItem('refreshToken');
+
+    if (refreshToken) {
+      dispatch(getUser())
+        .unwrap()
+        .catch(() => {
+          localStorage.removeItem('refreshToken');
+          document.cookie =
+            'accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        })
+        .finally(() => {
+          dispatch(userSliceActions.authCheck());
+        });
+    } else {
+      dispatch(userSliceActions.authCheck());
+    }
   }, [dispatch]);
 
   const closeModal = () => navigate(-1);
