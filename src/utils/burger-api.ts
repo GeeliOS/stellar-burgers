@@ -104,20 +104,24 @@ type TNewOrderResponse = TServerResponse<{
   name: string;
 }>;
 
-export const orderBurgerApi = (data: string[]) =>
-  fetchWithRefresh<TNewOrderResponse>(`${URL}/orders`, {
+export const orderBurgerApi = async (ingredients: string[]) => {
+  const accessToken =
+    getCookie('accessToken') || localStorage.getItem('accessToken');
+
+  const response = await fetch('/api/orders', {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json;charset=utf-8',
-      authorization: getCookie('accessToken')
-    } as HeadersInit,
-    body: JSON.stringify({
-      ingredients: data
-    })
-  }).then((data) => {
-    if (data?.success) return data;
-    return Promise.reject(data);
+      'Content-Type': 'application/json',
+      Authorization: accessToken ? accessToken : ''
+    },
+    body: JSON.stringify({ ingredients })
   });
+
+  if (!response.ok) {
+    throw new Error('Ошибка при создании заказа');
+  }
+  return response.json();
+};
 
 type TOrderResponse = TServerResponse<{
   orders: TOrder[];

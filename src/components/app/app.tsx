@@ -134,10 +134,12 @@ const App: React.FC = () => {
         <Route
           path='/profile/orders/:number'
           element={
-            <div className={styles.detailPageWrap}>
-              #{profileOrderNumber && formatOrderNumber(profileOrderNumber)}
-              <OrderInfo />
-            </div>
+            <ProtectedRoute>
+              <div className={styles.detailPageWrap}>
+                #{profileOrderNumber && formatOrderNumber(profileOrderNumber)}
+                <OrderInfo />
+              </div>
+            </ProtectedRoute>
           }
         />
         <Route

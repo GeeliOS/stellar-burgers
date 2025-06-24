@@ -19,9 +19,9 @@ type TUserResponse = {
 };
 
 // Получить пользователя, возвращаем TUser
-export const getUser = createAsyncThunk<TUser>('user/get', async () => {
+export const getUser = createAsyncThunk<TUserResponse>('user/get', async () => {
   const data = await getUserApi();
-  return data.user;
+  return data;
 });
 
 export const registerUser = createAsyncThunk<TUser, TRegisterData>(
@@ -88,10 +88,19 @@ const userSlice = createSlice({
         state.error = action.error.message ?? 'Unknown error';
         state.isAuthChecked = false;
       })
-      .addCase(getUser.fulfilled, (state, action: PayloadAction<TUser>) => {
-        state.isAuthChecked = true;
-        state.user = action.payload;
-      })
+      .addCase(
+        getUser.fulfilled,
+        (state, action: PayloadAction<TUserResponse>) => {
+          state.isAuthChecked = true;
+          state.user = action.payload.user;
+          if (action.payload.accessToken) {
+            localStorage.setItem('accessToken', action.payload.accessToken);
+          }
+          if (action.payload.refreshToken) {
+            localStorage.setItem('refreshToken', action.payload.refreshToken);
+          }
+        }
+      )
       .addCase(registerUser.pending, (state) => {
         state.isAuthChecked = false;
       })
