@@ -108,7 +108,7 @@ export const orderBurgerApi = async (ingredients: string[]) => {
   const accessToken =
     getCookie('accessToken') || localStorage.getItem('accessToken');
 
-  const response = await fetch('/api/orders', {
+  const response = await fetch(`${URL}/orders`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
