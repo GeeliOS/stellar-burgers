@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1751291331630" clover="3.2.0">
-  <project timestamp="1751291331630" name="All files">
-    <metrics statements="63" coveredstatements="62" conditionals="8" coveredconditionals="8" methods="7" coveredmethods="5" elements="78" coveredelements="75" complexity="0" loc="63" ncloc="63" packages="1" files="1" classes="1"/>
+<coverage generated="1751720395606" clover="3.2.0">
+  <project timestamp="1751720395606" name="All files">
+    <metrics statements="63" coveredstatements="62" conditionals="7" coveredconditionals="7" methods="7" coveredmethods="5" elements="77" coveredelements="74" complexity="0" loc="63" ncloc="63" packages="1" files="1" classes="1"/>
     <file name="burgerBuilderSlice.ts" path="C:\Users\Gleb\Desktop\Project_test\stellar-burgers\src\services\slice\burgerBuilderSlice.ts">
-      <metrics statements="63" coveredstatements="62" conditionals="8" coveredconditionals="8" methods="7" coveredmethods="5"/>
+      <metrics statements="63" coveredstatements="62" conditionals="7" coveredconditionals="7" methods="7" coveredmethods="5"/>
       <line num="1" count="1" type="stmt"/>
       <line num="2" count="1" type="stmt"/>
       <line num="3" count="1" type="stmt"/>
@@ -23,11 +23,11 @@
       <line num="17" count="1" type="stmt"/>
       <line num="18" count="1" type="stmt"/>
       <line num="19" count="1" type="cond" truecount="1" falsecount="0"/>
-      <line num="20" count="4" type="cond" truecount="1" falsecount="0"/>
+      <line num="20" count="2" type="cond" truecount="1" falsecount="0"/>
       <line num="21" count="1" type="stmt"/>
-      <line num="22" count="4" type="cond" truecount="1" falsecount="0"/>
-      <line num="23" count="3" type="stmt"/>
-      <line num="24" count="3" type="stmt"/>
+      <line num="22" count="1" type="stmt"/>
+      <line num="23" count="1" type="stmt"/>
+      <line num="24" count="1" type="stmt"/>
       <line num="25" count="1" type="stmt"/>
       <line num="26" count="1" type="cond" truecount="1" falsecount="0"/>
       <line num="27" count="1" type="stmt"/>

@@ -1,97 +1,98 @@
 import {
   burgerConstructorSliceReducer,
-  burgerConstructorSliceActions,
-  burgerConstructorSliceSelectors
+  burgerConstructorSliceActions
 } from './burgerBuilderSlice';
-import { TIngredient } from '@utils-types';
+import { TConstructorIngredient, TIngredient } from '@utils-types';
 
-const bun: TIngredient = {
-  _id: '1',
-  name: 'Bun',
+const bunIngredient: TIngredient = {
+  _id: 'bun1',
+  name: 'Булка',
   type: 'bun',
-  proteins: 10,
-  fat: 10,
-  carbohydrates: 10,
-  calories: 100,
+  proteins: 0,
+  fat: 0,
+  carbohydrates: 0,
+  calories: 0,
+  price: 100,
+  image: '',
+  image_large: '',
+  image_mobile: ''
+};
+
+const mainIngredient: TIngredient = {
+  _id: 'main1',
+  name: 'Начинка',
+  type: 'main',
+  proteins: 0,
+  fat: 0,
+  carbohydrates: 0,
+  calories: 0,
   price: 50,
   image: '',
   image_large: '',
   image_mobile: ''
 };
 
-const ingredient: TIngredient = {
-  _id: '2',
-  name: 'Ingredient',
-  type: 'main',
-  proteins: 5,
-  fat: 5,
-  carbohydrates: 5,
-  calories: 50,
-  price: 20,
-  image: '',
-  image_large: '',
-  image_mobile: ''
-};
-
-describe('burgerConstructorSlice', () => {
-  it('should handle addIngredient with bun', () => {
+describe('burgerBuilderSlice', () => {
+  it('добавляет булку', () => {
     const state = burgerConstructorSliceReducer(
       undefined,
-      burgerConstructorSliceActions.addIngredient(bun)
+      burgerConstructorSliceActions.addIngredient(bunIngredient)
     );
-    expect(state.bun?._id).toBe('1');
+    expect(state.bun?._id).toBe('bun1');
     expect(state.ingredients.length).toBe(0);
   });
 
-  it('should handle addIngredient with main ingredient', () => {
+  it('добавляет начинку', () => {
     const state = burgerConstructorSliceReducer(
       undefined,
-      burgerConstructorSliceActions.addIngredient(ingredient)
+      burgerConstructorSliceActions.addIngredient(mainIngredient)
     );
     expect(state.bun).toBeNull();
     expect(state.ingredients.length).toBe(1);
-    expect(state.ingredients[0]._id).toBe('2');
+    expect(state.ingredients[0]._id).toBe('main1');
   });
 
-  it('should handle removeIngredient', () => {
-    let state = burgerConstructorSliceReducer(
-      undefined,
-      burgerConstructorSliceActions.addIngredient(ingredient)
-    );
-    const idToRemove = state.ingredients[0].id;
-    state = burgerConstructorSliceReducer(
-      state,
-      burgerConstructorSliceActions.removeIngredient(idToRemove)
+  it('удаляет ингредиент по id', () => {
+    const initialState = {
+      bun: null,
+      ingredients: [{ ...mainIngredient, id: 'unique-id' }]
+    };
+    const state = burgerConstructorSliceReducer(
+      initialState,
+      burgerConstructorSliceActions.removeIngredient('unique-id')
     );
     expect(state.ingredients.length).toBe(0);
   });
 
-  it('should handle moveIngredientUp and moveIngredientDown', () => {
-    let state = burgerConstructorSliceReducer(
-      undefined,
-      burgerConstructorSliceActions.addIngredient(ingredient)
-    );
-    // Добавим второй ингредиент
-    const ingredient2 = { ...ingredient, _id: '3', id: 'testid2' };
-    state = {
-      ...state,
-      ingredients: [...state.ingredients, ingredient2]
+  it('перемещает ингредиент вверх', () => {
+    const initialState = {
+      bun: null,
+      ingredients: [
+        { ...mainIngredient, id: 'id1' },
+        { ...mainIngredient, id: 'id2' }
+      ]
     };
-
-    // переместим вниз (index 0)
-    state = burgerConstructorSliceReducer(
-      state,
-      burgerConstructorSliceActions.moveIngredientDown(0)
-    );
-    expect(state.ingredients[0]._id).toBe('3');
-    expect(state.ingredients[1]._id).toBe('2');
-
-    // переместим вверх (index 1)
-    state = burgerConstructorSliceReducer(
-      state,
+    const state = burgerConstructorSliceReducer(
+      initialState,
       burgerConstructorSliceActions.moveIngredientUp(1)
     );
-    expect(state.ingredients[0]._id).toBe('2');
-    expect(state.ingredients[1]._id).toBe('3');
+    expect(state.ingredients[0].id).toBe('id2');
+    expect(state.ingredients[1].id).toBe('id1');
+  });
+
+  it('перемещает ингредиент вниз', () => {
+    const initialState = {
+      bun: null,
+      ingredients: [
+        { ...mainIngredient, id: 'id1' },
+        { ...mainIngredient, id: 'id2' }
+      ]
+    };
+    const state = burgerConstructorSliceReducer(
+      initialState,
+      burgerConstructorSliceActions.moveIngredientDown(0)
+    );
+    expect(state.ingredients[0].id).toBe('id2');
+    expect(state.ingredients[1].id).toBe('id1');
   });
 });

@@ -7,14 +7,14 @@ describe('ingredientsSlice', () => {
     error: null
   };
 
-  it('should set loading true on pending', () => {
+  it('устанавливает isLoading в true при getIngredients.pending', () => {
     const action = { type: getIngredients.pending.type };
     const state = ingredientsSliceReducer(initialState, action);
     expect(state.isLoading).toBe(true);
     expect(state.error).toBeNull();
   });
 
-  it('should set ingredients and loading false on fulfilled', () => {
+  it('устанавливает данные и isLoading в false при getIngredients.fulfilled', () => {
     const ingredients = [
       {
         _id: '1',
@@ -35,17 +35,17 @@ describe('ingredientsSlice', () => {
       payload: ingredients
     };
     const state = ingredientsSliceReducer(initialState, action);
-    expect(state.isLoading).toBe(false);
     expect(state.ingredients).toEqual(ingredients);
+    expect(state.isLoading).toBe(false);
   });
 
-  it('should set error and loading false on rejected', () => {
+  it('устанавливает ошибку и isLoading в false при getIngredients.rejected', () => {
     const action = {
       type: getIngredients.rejected.type,
       error: { message: 'Error' }
     };
     const state = ingredientsSliceReducer(initialState, action);
-    expect(state.isLoading).toBe(false);
     expect(state.error).toBe('Error');
+    expect(state.isLoading).toBe(false);
   });
 });
