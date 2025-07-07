@@ -3,39 +3,38 @@
 describe('Конструктор бургера', () => {
   beforeEach(() => {
     // Перехват запроса ингредиентов и возврат моковых данных
-    cy.intercept('GET', 'api/ingredients', {
-      fixture: 'ingredients.json'
-    }).as('getIngredients');
+    cy.intercept('GET', '**/ingredients*', { fixture: 'ingredients.json' }).as(
+      'ingredients'
+    );
 
     // Перехват запросов авторизации и заказа
     cy.intercept('POST', '/api/orders', {
       statusCode: 200,
       body: {
         success: true,
-        order: {
-          number: 123456
-        }
+        order: { number: 123456 }
       }
     }).as('postOrder');
 
-    // Мок данных пользователя
     cy.intercept('GET', '/api/auth/user', {
       statusCode: 200,
       body: {
         success: true,
-        user: {
-          email: 'test@example.com',
-          name: 'Test User'
-        }
+        user: { email: 'test@example.com', name: 'Test User' }
       }
     }).as('getUser');
 
-    // Залогинить пользователя (можно замокать локалсторадж токены)
-    window.localStorage.setItem('refreshToken', 'mockRefreshToken');
-    window.localStorage.setItem('accessToken', 'mockAccessToken');
+    cy.viewport(1300, 800);
 
-    cy.visit('http://localhost:4000/');
-    cy.wait('@getIngredients');
+    cy.visit('http://localhost:4000/', {
+      onBeforeLoad(win) {
+        win.localStorage.setItem('refreshToken', 'mockRefreshToken');
+        win.localStorage.setItem('accessToken', 'mockAccessToken');
+      }
+    });
+
+    // При необходимости можно ждать загрузку ингредиентов
+    cy.wait('@ingredients');
   });
 
   it('Добавляет булку и начинку в конструктор', () => {
